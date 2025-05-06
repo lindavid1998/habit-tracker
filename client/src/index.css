@@ -9,6 +9,7 @@
 	--color-bg-light: #2d2d2d; /* Light dark for hover states */
 	--color-bg-lighter: #3d3d3d; /* Lighter dark for active states */
 	--color-border: #3d3d3d;
+	--color-border-active: #7c7c7c;
 
 	/* Text Colors */
 	--color-text-primary: #e0e0e0; /* Primary text (light gray) */
@@ -24,6 +25,8 @@
 	--color-success: #28a745; /* Green for success messages */
 	--color-warning: #ffc107; /* Yellow for warnings */
 	--color-error: #dc3545; /* Red for errors */
+
+	box-sizing: border-box;
 }
 
 body {
@@ -66,4 +69,19 @@ button {
 	font: inherit;
 	color: inherit;
 	cursor: pointer;
+}
+
+input {
+	background: none;
+	margin: 0;
+	font: inherit;
+	color: inherit;
+	outline: none;
+	border: 1px solid var(--color-border);
+	background-color: var(--color-bg-light);
+	border-radius: 0.5rem;
+	padding: 0.75rem;
+	&:focus {
+		border-color: var(--color-border-active);
+	}
 }
