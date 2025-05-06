@@ -7,6 +7,7 @@
 	--color-bg-dark: #121212; /* Dark background */
 	--color-bg-medium: #1e1e1e; /* Medium dark for cards/sections */
 	--color-bg-light: #2d2d2d; /* Light dark for hover states */
+	--color-bg-lighter: #3d3d3d; /* Lighter dark for active states */
 	--color-border: #3d3d3d;
 
 	/* Text Colors */
@@ -17,6 +18,7 @@
 	/* Accent Color (Blue) */
 	--color-accent: #4d8bf0; /* Vibrant blue for buttons, highlights */
 	--color-accent-hover: #3a7ae8; /* Slightly darker for hover states */
+	--color-accent-active: #2d70e6;
 
 	/* Utility Colors */
 	--color-success: #28a745; /* Green for success messages */
@@ -31,7 +33,7 @@ body {
 	min-width: 320px;
 	min-height: 100vh;
 	background-color: var(--color-bg-dark);
-  color: var(--color-text-primary);
+	color: var(--color-text-primary);
 }
 
 h1,
@@ -54,4 +56,14 @@ p {
 
 small {
 	color: var(--color-text-secondary);
+}
+
+button {
+	background: none;
+	border: none;
+	padding: 0;
+	margin: 0;
+	font: inherit;
+	color: inherit;
+	cursor: pointer;
 }

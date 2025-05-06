@@ -1,0 +1,32 @@
+button {
+  color: var(--color-text-primary);
+	border-radius: 0.5rem;
+	border-color: var(--color-border);
+	cursor: pointer;
+}
+
+.md {
+	padding: 0.75rem;
+}
+
+.primary {
+	background-color: var(--color-accent);
+	&:hover {
+		background-color: var(--color-accent-hover);
+	}
+	&:active {
+		background-color: var(--color-accent-active);
+		transform: scale(0.98);
+	}
+}
+
+.secondary {
+	background-color: var(--color-bg-light);
+	&:hover {
+		background-color: var(--color-bg-lighter);
+	}
+	&:active {
+		background-color: var(--color-bg-medium);
+		transform: scale(0.98);
+	}
+}
