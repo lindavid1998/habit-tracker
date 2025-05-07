@@ -1,8 +1,11 @@
 button {
-  color: var(--color-text-primary);
+	color: var(--color-text-primary);
 	border-radius: 0.5rem;
 	border-color: var(--color-border);
 	cursor: pointer;
+	&:active {
+		transform: scale(0.98);
+	}
 }
 
 .md {
@@ -16,7 +19,6 @@ button {
 	}
 	&:active {
 		background-color: var(--color-accent-active);
-		transform: scale(0.98);
 	}
 }
 
@@ -27,6 +29,19 @@ button {
 	}
 	&:active {
 		background-color: var(--color-bg-medium);
-		transform: scale(0.98);
+	}
+}
+
+.auth-toggle-active {
+	background-color: var(--color-bg-dark);
+	&:hover {
+		background-color: var(--color-bg-light);
+	}
+}
+
+.auth-toggle-inactive {
+	background-color: var(--color-bg-medium);
+	&:hover {
+		background-color: var(--color-bg-light);
 	}
 }

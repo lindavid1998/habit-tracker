@@ -4,7 +4,7 @@ import { ReactNode } from 'react';
 interface ButtonProps {
   children: ReactNode,
   size?: 'sm' | 'md',
-  variant?: 'primary' | 'secondary',
+  variant?: 'primary' | 'secondary' | 'auth-toggle-active' | 'auth-toggle-inactive',
   onClick?: () => void;
 }
 
