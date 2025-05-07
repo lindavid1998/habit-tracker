@@ -1,14 +1,15 @@
 import './TextInput.css'
 
 interface TextInputProps {
-  label: string
+  label: string,
+  type?: string
 }
 
-function TextInput({ label }: TextInputProps) {
+function TextInput({ label, type = 'text' }: TextInputProps) {
   return (
     <div className="text-input">
       <label>{label}</label>
-      <input type='text' placeholder={label}></input>
+      <input type={type} placeholder={label}></input>
     </div>
   )
 }
