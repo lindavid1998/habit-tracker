@@ -3,6 +3,8 @@ button {
 	border-radius: 0.5rem;
 	border-color: var(--color-border);
 	cursor: pointer;
+	flex-grow: 0;
+	width: fit-content;
 	&:active {
 		transform: scale(0.98);
 	}
