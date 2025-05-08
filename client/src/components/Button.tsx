@@ -5,12 +5,18 @@ interface ButtonProps {
   children: ReactNode,
   size?: 'sm' | 'md',
   variant?: 'primary' | 'secondary' | 'auth-toggle-active' | 'auth-toggle-inactive',
-  onClick?: () => void;
+  onClick?: () => void,
+  className?: string;
 }
 
-function Button({ children, size = 'md', variant = 'primary', onClick }: ButtonProps) {
+function Button({ children, size = 'md', variant = 'primary', onClick, className = '' }: ButtonProps) {
   return (
-    <button onClick={onClick} className={`${size} ${variant}`}>{children}</button>
+    <button 
+      onClick={onClick} 
+      className={`${size} ${variant} ${className}`.trim()}
+    >
+      {children}
+    </button>
   )
 }
 

@@ -47,3 +47,7 @@ button {
 		background-color: var(--color-bg-light);
 	}
 }
+
+.full-width {
+	width: 100%;
+}
