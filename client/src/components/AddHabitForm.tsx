@@ -9,7 +9,11 @@ const locations: string[] = ['San Diego, CA', 'Seattle, WA', 'New York, NY'];
 
 type FormStatus = 'idle' | 'loading' | 'success' | 'error';
 
-export default function AddHabitForm() {
+interface AddHabitFormProps {
+  onClickBack: () => void
+}
+
+export default function AddHabitForm({ onClickBack }: AddHabitFormProps) {
   const [origin, setOrigin] = useState<string>("")
   const [destination, setDestination] = useState<string>("")
   const [description, setDescription] = useState<string>("")
@@ -21,21 +25,23 @@ export default function AddHabitForm() {
     try {
       // TODO: Replace with actual API call
       await new Promise(resolve => setTimeout(resolve, 2000)) // Simulated API call
-      setStatus('success')
+      
+      const randomNum = Math.random()
+      if (randomNum < 0.5) {
+        setStatus('success')
+      } else {
+        throw new Error('Failed to create habit')
+      }
     } catch (error) {
       setStatus('error')
       setErrorMessage(error instanceof Error ? error.message : 'An error occurred')
     }
   }
 
-
   const renderStatusMessage = () => {
     if (status === 'loading') {
       return (
         <div className="add-habit-form status">
-          <button className="back-button" aria-label="Back">
-            <BackArrow />
-          </button>
           <div className="header loading-message">
             <div className="spinner"></div>
             <h3>Creating your habit...</h3>
@@ -49,14 +55,14 @@ export default function AddHabitForm() {
 
     return (
       <div className="add-habit-form status">
-        <button className="back-button" aria-label="Back">
+        <button className="back-button" aria-label="Back" onClick={onClickBack}>
           <BackArrow />
         </button>
         <div className="header">
           <h3>{title}</h3>
           <p className='subtitle'>{subtitle}</p>
         </div>
-        <Button variant="secondary" className="full-width">Okay</Button>
+        <Button variant="secondary" className="full-width" onClick={onClickBack}>Okay</Button>
       </div>
     )
   }
@@ -67,7 +73,7 @@ export default function AddHabitForm() {
 
   return (
     <div className='add-habit-form'>
-      <button className="back-button">
+      <button className="back-button" onClick={onClickBack}>
         <BackArrow />
       </button>
 
@@ -84,7 +90,7 @@ export default function AddHabitForm() {
         onChange={setDescription}
         required
       />
-      
+
       <div className="add-button">
         <Button onClick={handleSubmit} className='full-width'>
           Add habit

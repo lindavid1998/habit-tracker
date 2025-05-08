@@ -4,7 +4,7 @@ import '../styles/Header.css'
 
 function Header() {
   return (
-    <div className="header">
+    <div className="app-header">
       <h3>Habit Tracker</h3>
       <div className="user">
         <Button variant="secondary">Sign out</Button>
