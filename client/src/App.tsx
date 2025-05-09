@@ -1,15 +1,13 @@
-import { useState } from 'react'
-import './App.css'
+import './App.css';
+import Home from './pages/Home';
+import Auth from './pages/Auth';
 
 function App() {
   return (
     <>
-      <h1>Vite + React</h1>
-      <h3>Test</h3>
-      <p>test</p>
-      <small>test</small>
+      <Auth></Auth>
     </>
-  )
+  );
 }
 
-export default App
+export default App;

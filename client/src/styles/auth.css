@@ -17,7 +17,7 @@
 .auth-page {
   display: flex;
   flex-direction: column;
-  margin-top: 20%;
+  margin-top: 10%;
   align-items: center;
   min-height: 100vh;
 }
@@ -37,6 +37,6 @@
   width: 100%;
 }
 
-.auth-toggle button {
-  flex: 1;
+.auth-page h1 {
+  margin-bottom: 1rem;
 }

@@ -8,7 +8,7 @@ function LoginForm() {
     <div className="login-form">
       <TextInput label="Email" required />
       <TextInput label="Password" required />
-      <Button>Log In</Button>
+      <Button className='full-width'>Log In</Button>
     </div>
   );
 }
@@ -20,7 +20,7 @@ function SignUpForm() {
       <TextInput label="Email" required />
       <TextInput label="Password" type="password" required />
       <TextInput label="Confirm Password" type="password" required />
-      <Button>Sign Up</Button>
+      <Button className='full-width'>Sign Up</Button>
     </div>
   );
 }
@@ -34,12 +34,14 @@ function AuthForm() {
         <Button
           variant={isLogin ? 'auth-toggle-active' : 'auth-toggle-inactive'}
           onClick={() => setIsLogin(true)}
+          className='full-width'
         >
           Log In
         </Button>
         <Button
           variant={!isLogin ? 'auth-toggle-active' : 'auth-toggle-inactive'}
           onClick={() => setIsLogin(false)}
+          className='full-width'
         >
           Sign Up
         </Button>
