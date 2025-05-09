@@ -1,0 +1,24 @@
+.habit-page {
+  width: 100%;
+  height: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.title {
+  display: flex;
+  justify-content: space-between;
+}
+
+.stats {
+  display: flex;
+  gap: 1rem;
+}
+
+.stat-name {
+  color: var(--color-text-secondary);
+}
+
+.stat-value {
+  color: var(--color-text-primary);
+}
