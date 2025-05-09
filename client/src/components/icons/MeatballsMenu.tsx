@@ -3,16 +3,16 @@ import React from 'react';
 interface MeatballsMenuProps {
   size?: number;
   color?: string;
-  onClick?: () => void
+  onClick?: () => void;
 }
 
 const MeatballsMenu: React.FC<MeatballsMenuProps> = ({
   size = 24,
   color = 'currentColor',
-  onClick
+  onClick,
 }) => {
   return (
-    <div className="meatballs-menu" onClick={onClick} style={{'cursor': 'pointer'}}>
+    <div className="meatballs-menu" onClick={onClick} style={{ cursor: 'pointer' }}>
       <svg
         width={size}
         height={size}
@@ -28,4 +28,4 @@ const MeatballsMenu: React.FC<MeatballsMenuProps> = ({
   );
 };
 
-export default MeatballsMenu; 
+export default MeatballsMenu;

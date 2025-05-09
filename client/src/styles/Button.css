@@ -1,53 +1,53 @@
 button {
-	color: var(--color-text-primary);
-	border-radius: 0.5rem;
-	border-color: var(--color-border);
-	cursor: pointer;
-	flex-grow: 0;
-	width: fit-content;
-	&:active {
-		transform: scale(0.98);
-	}
+  color: var(--color-text-primary);
+  border-radius: 0.5rem;
+  border-color: var(--color-border);
+  cursor: pointer;
+  flex-grow: 0;
+  width: fit-content;
+  &:active {
+    transform: scale(0.98);
+  }
 }
 
 .md {
-	padding: 0.75rem;
+  padding: 0.75rem;
 }
 
 .primary {
-	background-color: var(--color-accent);
-	&:hover {
-		background-color: var(--color-accent-hover);
-	}
-	&:active {
-		background-color: var(--color-accent-active);
-	}
+  background-color: var(--color-accent);
+  &:hover {
+    background-color: var(--color-accent-hover);
+  }
+  &:active {
+    background-color: var(--color-accent-active);
+  }
 }
 
 .secondary {
-	background-color: var(--color-bg-light);
-	&:hover {
-		background-color: var(--color-bg-lighter);
-	}
-	&:active {
-		background-color: var(--color-bg-medium);
-	}
+  background-color: var(--color-bg-light);
+  &:hover {
+    background-color: var(--color-bg-lighter);
+  }
+  &:active {
+    background-color: var(--color-bg-medium);
+  }
 }
 
 .auth-toggle-active {
-	background-color: var(--color-bg-dark);
-	&:hover {
-		background-color: var(--color-bg-light);
-	}
+  background-color: var(--color-bg-dark);
+  &:hover {
+    background-color: var(--color-bg-light);
+  }
 }
 
 .auth-toggle-inactive {
-	background-color: var(--color-bg-medium);
-	&:hover {
-		background-color: var(--color-bg-light);
-	}
+  background-color: var(--color-bg-medium);
+  &:hover {
+    background-color: var(--color-bg-light);
+  }
 }
 
 .full-width {
-	width: 100%;
+  width: 100%;
 }

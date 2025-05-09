@@ -1,4 +1,4 @@
-import '../styles/TextInput.css'
+import '../styles/TextInput.css';
 
 interface TextareaProps {
   label: string;
@@ -11,7 +11,7 @@ export default function Textarea({ label, value, onChange, required = false }: T
   return (
     <div className="text-input">
       <label>{label}</label>
-      <textarea 
+      <textarea
         value={value}
         onChange={(e) => onChange?.(e.target.value)}
         placeholder={label}

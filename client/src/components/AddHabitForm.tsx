@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import Dropdown from './Dropdown';
-import '../styles/AddHabitForm.css'
+import '../styles/AddHabitForm.css';
 import Button from './Button';
 import BackArrow from './icons/BackArrow';
 import Textarea from './Textarea';
@@ -10,33 +10,33 @@ const locations: string[] = ['San Diego, CA', 'Seattle, WA', 'New York, NY'];
 type FormStatus = 'idle' | 'loading' | 'success' | 'error';
 
 interface AddHabitFormProps {
-  onClickBack: () => void
+  onClickBack: () => void;
 }
 
 export default function AddHabitForm({ onClickBack }: AddHabitFormProps) {
-  const [origin, setOrigin] = useState<string>("")
-  const [destination, setDestination] = useState<string>("")
-  const [description, setDescription] = useState<string>("")
-  const [status, setStatus] = useState<FormStatus>('idle')
-  const [errorMessage, setErrorMessage] = useState<string>("")
+  const [origin, setOrigin] = useState<string>('');
+  const [destination, setDestination] = useState<string>('');
+  const [description, setDescription] = useState<string>('');
+  const [status, setStatus] = useState<FormStatus>('idle');
+  const [errorMessage, setErrorMessage] = useState<string>('');
 
   const handleSubmit = async () => {
-    setStatus('loading')
+    setStatus('loading');
     try {
       // TODO: Replace with actual API call
-      await new Promise(resolve => setTimeout(resolve, 2000)) // Simulated API call
-      
-      const randomNum = Math.random()
+      await new Promise((resolve) => setTimeout(resolve, 2000)); // Simulated API call
+
+      const randomNum = Math.random();
       if (randomNum < 0.5) {
-        setStatus('success')
+        setStatus('success');
       } else {
-        throw new Error('Failed to create habit')
+        throw new Error('Failed to create habit');
       }
     } catch (error) {
-      setStatus('error')
-      setErrorMessage(error instanceof Error ? error.message : 'An error occurred')
+      setStatus('error');
+      setErrorMessage(error instanceof Error ? error.message : 'An error occurred');
     }
-  }
+  };
 
   const renderStatusMessage = () => {
     if (status === 'loading') {
@@ -50,8 +50,8 @@ export default function AddHabitForm({ onClickBack }: AddHabitFormProps) {
       );
     }
 
-    const title = status === 'success' ? 'Success' : 'Error'
-    const subtitle = status === 'success' ? "Let's get to work!" : errorMessage
+    const title = status === 'success' ? 'Success' : 'Error';
+    const subtitle = status === 'success' ? "Let's get to work!" : errorMessage;
 
     return (
       <div className="add-habit-form status">
@@ -60,39 +60,46 @@ export default function AddHabitForm({ onClickBack }: AddHabitFormProps) {
         </button>
         <div className="header">
           <h3>{title}</h3>
-          <p className='subtitle'>{subtitle}</p>
+          <p className="subtitle">{subtitle}</p>
         </div>
-        <Button variant="secondary" className="full-width" onClick={onClickBack}>Okay</Button>
+        <Button variant="secondary" className="full-width" onClick={onClickBack}>
+          Okay
+        </Button>
       </div>
-    )
-  }
+    );
+  };
 
   if (status != 'idle') {
-    return renderStatusMessage()
+    return renderStatusMessage();
   }
 
   return (
-    <div className='add-habit-form'>
+    <div className="add-habit-form">
       <button className="back-button" onClick={onClickBack}>
         <BackArrow />
       </button>
 
       <div className="header">
         <h3>Create a habit</h3>
-        <p className='subtitle'>What do you want to work on?</p>
+        <p className="subtitle">What do you want to work on?</p>
       </div>
 
-      <Dropdown options={locations.filter(loc => loc !== destination)} label="Origin" value={origin} onChange={setOrigin} />
-      <Dropdown options={locations.filter(loc => loc !== origin)} label="Destination" value={destination} onChange={setDestination} />
-      <Textarea 
-        label="Description"
-        value={description}
-        onChange={setDescription}
-        required
+      <Dropdown
+        options={locations.filter((loc) => loc !== destination)}
+        label="Origin"
+        value={origin}
+        onChange={setOrigin}
       />
+      <Dropdown
+        options={locations.filter((loc) => loc !== origin)}
+        label="Destination"
+        value={destination}
+        onChange={setDestination}
+      />
+      <Textarea label="Description" value={description} onChange={setDescription} required />
 
       <div className="add-button">
-        <Button onClick={handleSubmit} className='full-width'>
+        <Button onClick={handleSubmit} className="full-width">
           Add habit
         </Button>
       </div>

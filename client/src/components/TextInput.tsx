@@ -1,9 +1,9 @@
-import '../styles/TextInput.css'
+import '../styles/TextInput.css';
 
 interface TextInputProps {
-  label: string,
-  type?: string,
-  required?: boolean
+  label: string;
+  type?: string;
+  required?: boolean;
 }
 
 function TextInput({ label, type = 'text', required = false }: TextInputProps) {
@@ -12,7 +12,7 @@ function TextInput({ label, type = 'text', required = false }: TextInputProps) {
       <label>{label}</label>
       <input type={type} placeholder={label} required={required}></input>
     </div>
-  )
+  );
 }
 
-export default TextInput; 
+export default TextInput;

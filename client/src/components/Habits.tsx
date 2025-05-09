@@ -1,23 +1,23 @@
-import '../styles/Habits.css'
-import { useState } from 'react'
+import '../styles/Habits.css';
+import { useState } from 'react';
 
 interface HabitsProps {
-  habits: string[]
+  habits: string[];
 }
 
 function Habits({ habits }: HabitsProps) {
-  const [completedHabits, setCompletedHabits] = useState<string[]>([])
+  const [completedHabits, setCompletedHabits] = useState<string[]>([]);
 
   const handleChange = (habit: string) => {
-    setCompletedHabits(prev => {
+    setCompletedHabits((prev) => {
       if (prev.includes(habit)) {
-        return prev.filter((item) => item != habit)
-      } 
+        return prev.filter((item) => item != habit);
+      }
 
-      return [...prev, habit]
-    })
-  }
-  
+      return [...prev, habit];
+    });
+  };
+
   return (
     <div className="habits">
       {habits.map((habit, index) => (
@@ -31,7 +31,7 @@ function Habits({ habits }: HabitsProps) {
         </div>
       ))}
     </div>
-  )
+  );
 }
 
-export default Habits
+export default Habits;

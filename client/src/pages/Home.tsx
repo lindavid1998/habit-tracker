@@ -1,28 +1,24 @@
 import { useState } from 'react';
-import Header from "../components/Header";
-import Button from "../components/Button";
-import Habits from "../components/Habits";
+import Header from '../components/Header';
+import Button from '../components/Button';
+import Habits from '../components/Habits';
 import AddHabitForm from '../components/AddHabitForm';
-import '../styles/Home.css'
+import '../styles/Home.css';
 
 interface HomeProps {
-  userName: string
+  userName: string;
 }
 
-const habits = [
-  'Exercise for 30 minutes',
-  'Drink 2L of water',
-  'Water plants'
-]
+const habits = ['Exercise for 30 minutes', 'Drink 2L of water', 'Water plants'];
 
 function Home({ userName }: HomeProps) {
-  const [showAddHabitForm, setShowAddHabitForm] = useState<boolean>(false)
+  const [showAddHabitForm, setShowAddHabitForm] = useState<boolean>(false);
   const today = new Date();
   const formattedDate = today.toLocaleDateString('en-US', { month: 'long', day: 'numeric' });
 
   const toggleFormVisibility = () => {
-    setShowAddHabitForm(prev => !prev)
-  }
+    setShowAddHabitForm((prev) => !prev);
+  };
   // TODO on click back, call toggleFormVisibility
 
   return (
@@ -39,7 +35,7 @@ function Home({ userName }: HomeProps) {
         <h1>Welcome, {userName}</h1>
         <Button onClick={toggleFormVisibility}>Add habit</Button>
       </div>
-      
+
       <div className="section">
         <h1>Today, {formattedDate}</h1>
         <Habits habits={habits} />
@@ -48,4 +44,4 @@ function Home({ userName }: HomeProps) {
   );
 }
 
-export default Home
+export default Home;

@@ -1,6 +1,6 @@
-import Avatar from "./Avatar"
-import Button from "./Button"
-import '../styles/Header.css'
+import Avatar from './Avatar';
+import Button from './Button';
+import '../styles/Header.css';
 
 function Header() {
   return (
@@ -11,7 +11,7 @@ function Header() {
         <Avatar letter="D"></Avatar>
       </div>
     </div>
-  )
+  );
 }
 
-export default Header
+export default Header;

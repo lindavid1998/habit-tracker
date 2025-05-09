@@ -1,15 +1,11 @@
-import '../styles/Avatar.css'
+import '../styles/Avatar.css';
 
 interface AvatarProps {
-  letter?: string
+  letter?: string;
 }
 
 function Avatar({ letter = 'U' }: AvatarProps) {
-  return (
-    <div className="avatar">
-      {letter.toUpperCase()}
-    </div>
-  );
+  return <div className="avatar">{letter.toUpperCase()}</div>;
 }
 
-export default Avatar
+export default Avatar;
