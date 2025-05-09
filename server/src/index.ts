@@ -92,10 +92,65 @@ app.post('/auth/signup', async (req: Request, res: Response) => {
   }
 });
 
-/*TODO: Log in route*/
 app.post('/auth/login', async (req: Request, res: Response) => {
   try {
-    res.status(200);
+    // destructure request body to get email and password
+    const { email, password } = req.body;
+
+    // validate input
+    if (!email || !password) {
+      res.status(400).json({ error: 'Email and password are required' });
+      return
+    }
+
+    // query db
+    const result: QueryResult = await pool.query(
+      'SELECT id, name, email, password_hash FROM users WHERE email = $1',
+      [email]
+    );
+
+    // if no match, return 401 error
+    if (result.rowCount === 0) {
+      res.status(401).json({ error: 'Invalid credentials' });
+      return
+    }
+
+    // create user object from db result
+    const dbUser = result.rows[0];
+    const user: User = {
+      id: dbUser.id,
+      name: dbUser.name,
+      email: dbUser.email
+    };
+    
+    // verify password
+    const isValidPassword = await bcrypt.compare(password, dbUser.password_hash);
+    if (!isValidPassword) {
+      res.status(401).json({ error: 'Invalid credentials' });
+      return
+    }
+
+    // generate JWT token
+    const token = jwt.sign(
+      { userId: user.id, name: user.name, email: user.email },
+      JWT_SECRET,
+      { expiresIn: '24h' }
+    );
+
+    // set JWT as HTTP-only cookie
+    res.cookie('token', token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'strict',
+      maxAge: 24 * 60 * 60 * 1000, // 24 hours
+    });
+
+    // return success response
+    res.status(200).json({
+      message: 'Login successful',
+      user
+    });
+    return
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: 'Internal server error' });
