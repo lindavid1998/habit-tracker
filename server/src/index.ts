@@ -1,12 +1,107 @@
-import express, { Request, Response } from 'express'
+import express, { Request, Response } from 'express';
+import jwt from 'jsonwebtoken';
+import bcrypt from 'bcryptjs';
+import cookieParser from 'cookie-parser';
+import dotenv from 'dotenv';
+import { pool } from '../db';
+import { QueryResult } from 'pg'
+
+interface User {
+  id: string;
+  name: string;
+  email: string;
+}
 
 const PORT = 3000;
-const app = express()
+const app = express();
+
+dotenv.config(); // Load environment variables from .env file
+const JWT_SECRET = process.env.JWT_SECRET || 'my-secret-key';
+
+app.use(express.json());
+app.use(cookieParser());
 
 app.get('/', (req: Request, res: Response) => {
-  res.send('Hello world')
-})
+  res.send('Hello world');
+});
+
+app.post('/auth/signup', async (req: Request, res: Response) => {
+  try {
+    const { name, email, password, confirmPassword } = req.body;
+
+    // Validate input
+    if (!name || !email || !password || !confirmPassword) {
+      res.status(400).json({ error: 'All fields are required' });
+      return
+    }
+
+    if (password !== confirmPassword) {
+      res.status(400).json({ error: 'Passwords do not match' });
+      return
+    }
+
+    // throw error if email already taken
+    const emailQueryResult: QueryResult = await pool.query('SELECT email FROM users WHERE email = $1', [email]);
+    if (emailQueryResult.rowCount != 0) {
+      res.status(409).json({ error: 'Email already taken'})
+      return
+    }
+
+    // Hash password
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    // insert user into db
+    const insertResult: QueryResult = await pool.query(
+      'INSERT INTO users (name, email, password_hash) VALUES ($1, $2, $3) RETURNING id',
+      [name, email, hashedPassword]
+    );
+    
+    const { id } = insertResult.rows[0];
+    
+    // Create user object from database result
+    const user: User = {
+      id,
+      name,
+      email
+    };
+
+    // Generate JWT
+    const token = jwt.sign(
+      { userId: user.id, name: user.name, email: user.email },
+      JWT_SECRET,
+      { expiresIn: '24h' }
+    );
+
+    // Set JWT as HTTP-only cookie
+    res.cookie('token', token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'strict',
+      maxAge: 24 * 60 * 60 * 1000, // 24 hours
+    });
+    
+    // Send success response
+    res.status(201).json({
+      message: 'User created successfully',
+      user,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+/*TODO: Log in route*/
+app.post('/auth/login', async (req: Request, res: Response) => {
+  try {
+    res.status(200);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
 
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`)
-})
+  console.log(`Server is running on port ${PORT}`);
+});
