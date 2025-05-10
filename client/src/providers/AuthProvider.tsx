@@ -43,9 +43,10 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
             'Content-Type': 'application/json',
           },
         });
+
         if (response.ok) {
           const data = await response.json();
-          setUser(data.user);
+          setUser(data);
         }
         setLoading(false);
       } catch (error) {

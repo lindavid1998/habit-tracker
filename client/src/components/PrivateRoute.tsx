@@ -11,9 +11,9 @@ export default function PrivateRoute() {
     return <div>Loading...</div>; // TODO: replace with spinner
   }
 
-  if (!auth?.user) {
-    // user not logged in, route to auth page
+  if (!auth.user) {
     navigate('/');
+    return null;
   }
 
   return <Outlet />;
