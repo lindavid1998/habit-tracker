@@ -7,6 +7,7 @@ interface ButtonProps {
   variant?: 'primary' | 'secondary' | 'auth-toggle-active' | 'auth-toggle-inactive';
   onClick?: () => void;
   className?: string;
+  type?: 'button' | 'submit';
 }
 
 function Button({
@@ -15,9 +16,10 @@ function Button({
   variant = 'primary',
   onClick,
   className = '',
+  type = 'button',
 }: ButtonProps) {
   return (
-    <button onClick={onClick} className={`${size} ${variant} ${className}`.trim()}>
+    <button onClick={onClick} className={`${size} ${variant} ${className}`.trim()} type={type}>
       {children}
     </button>
   );

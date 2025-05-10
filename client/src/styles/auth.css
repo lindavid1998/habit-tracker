@@ -40,3 +40,9 @@
 .auth-page h1 {
   margin-bottom: 1rem;
 }
+
+.error-msg {
+  color: var(--color-error);
+  width: 100%;
+  text-align: center;
+}

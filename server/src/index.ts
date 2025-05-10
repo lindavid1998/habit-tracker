@@ -3,8 +3,9 @@ import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
+import cors from 'cors';
 import { pool } from '../db';
-import { QueryResult } from 'pg'
+import { QueryResult } from 'pg';
 
 interface User {
   id: string;
@@ -18,6 +19,16 @@ const app = express();
 dotenv.config(); // Load environment variables from .env file
 const JWT_SECRET = process.env.JWT_SECRET || 'my-secret-key';
 
+// CORS configuration
+app.use(
+  cors({
+    origin: 'http://localhost:5173', // Vite's default port
+    credentials: true, // Required for cookies
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+  })
+);
+
 app.use(express.json());
 app.use(cookieParser());
 
@@ -28,23 +39,26 @@ app.get('/', (req: Request, res: Response) => {
 app.post('/auth/signup', async (req: Request, res: Response) => {
   try {
     const { name, email, password, confirmPassword } = req.body;
-
+    
     // Validate input
     if (!name || !email || !password || !confirmPassword) {
       res.status(400).json({ error: 'All fields are required' });
-      return
+      return;
     }
 
     if (password !== confirmPassword) {
       res.status(400).json({ error: 'Passwords do not match' });
-      return
+      return;
     }
 
     // throw error if email already taken
-    const emailQueryResult: QueryResult = await pool.query('SELECT email FROM users WHERE email = $1', [email]);
+    const emailQueryResult: QueryResult = await pool.query(
+      'SELECT email FROM users WHERE email = $1',
+      [email]
+    );
     if (emailQueryResult.rowCount != 0) {
-      res.status(409).json({ error: 'Email already taken'})
-      return
+      res.status(409).json({ error: 'Email already taken' });
+      return;
     }
 
     // Hash password
@@ -56,22 +70,20 @@ app.post('/auth/signup', async (req: Request, res: Response) => {
       'INSERT INTO users (name, email, password_hash) VALUES ($1, $2, $3) RETURNING id',
       [name, email, hashedPassword]
     );
-    
+
     const { id } = insertResult.rows[0];
-    
+
     // Create user object from database result
     const user: User = {
       id,
       name,
-      email
+      email,
     };
 
     // Generate JWT
-    const token = jwt.sign(
-      { userId: user.id, name: user.name, email: user.email },
-      JWT_SECRET,
-      { expiresIn: '24h' }
-    );
+    const token = jwt.sign({ userId: user.id, name: user.name, email: user.email }, JWT_SECRET, {
+      expiresIn: '24h',
+    });
 
     // Set JWT as HTTP-only cookie
     res.cookie('token', token, {
@@ -80,7 +92,7 @@ app.post('/auth/signup', async (req: Request, res: Response) => {
       sameSite: 'strict',
       maxAge: 24 * 60 * 60 * 1000, // 24 hours
     });
-    
+
     // Send success response
     res.status(201).json({
       message: 'User created successfully',
@@ -100,7 +112,7 @@ app.post('/auth/login', async (req: Request, res: Response) => {
     // validate input
     if (!email || !password) {
       res.status(400).json({ error: 'Email and password are required' });
-      return
+      return;
     }
 
     // query db
@@ -112,7 +124,7 @@ app.post('/auth/login', async (req: Request, res: Response) => {
     // if no match, return 401 error
     if (result.rowCount === 0) {
       res.status(401).json({ error: 'Invalid credentials' });
-      return
+      return;
     }
 
     // create user object from db result
@@ -120,22 +132,20 @@ app.post('/auth/login', async (req: Request, res: Response) => {
     const user: User = {
       id: dbUser.id,
       name: dbUser.name,
-      email: dbUser.email
+      email: dbUser.email,
     };
-    
+
     // verify password
     const isValidPassword = await bcrypt.compare(password, dbUser.password_hash);
     if (!isValidPassword) {
       res.status(401).json({ error: 'Invalid credentials' });
-      return
+      return;
     }
 
     // generate JWT token
-    const token = jwt.sign(
-      { userId: user.id, name: user.name, email: user.email },
-      JWT_SECRET,
-      { expiresIn: '24h' }
-    );
+    const token = jwt.sign({ userId: user.id, name: user.name, email: user.email }, JWT_SECRET, {
+      expiresIn: '24h',
+    });
 
     // set JWT as HTTP-only cookie
     res.cookie('token', token, {
@@ -148,9 +158,9 @@ app.post('/auth/login', async (req: Request, res: Response) => {
     // return success response
     res.status(200).json({
       message: 'Login successful',
-      user
+      user,
     });
-    return
+    return;
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: 'Internal server error' });

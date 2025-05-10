@@ -3,51 +3,191 @@ import Button from './Button';
 import TextInput from './TextInput';
 import '../styles/auth.css';
 
-function LoginForm() {
+interface AuthFormData {
+  name?: string;
+  email: string;
+  password: string;
+  confirmPassword?: string;
+}
+
+interface AuthHandlers {
+  onNameChange?: (value: string) => void;
+  onEmailChange: (value: string) => void;
+  onPasswordChange: (value: string) => void;
+  onConfirmPasswordChange?: (value: string) => void;
+}
+
+function LoginForm({ data, handlers }: { data: AuthFormData; handlers: AuthHandlers }) {
+  const { email, password } = data;
+  const { onEmailChange, onPasswordChange } = handlers;
+
   return (
     <div className="login-form">
-      <TextInput label="Email" required />
-      <TextInput label="Password" required />
-      <Button className='full-width'>Log In</Button>
+      <TextInput label="Email" type="email" onChange={onEmailChange} value={email} required />
+      <TextInput
+        label="Password"
+        type="password"
+        onChange={onPasswordChange}
+        value={password}
+        required
+      />
+      <Button className="full-width" type="submit">
+        Log In
+      </Button>
     </div>
   );
 }
 
-function SignUpForm() {
+function SignUpForm({ data, handlers }: { data: AuthFormData; handlers: AuthHandlers }) {
+  const { name, email, password, confirmPassword } = data;
+  const { onNameChange, onEmailChange, onPasswordChange, onConfirmPasswordChange } = handlers;
+
   return (
     <div className="signup-form">
-      <TextInput label="Name" required />
-      <TextInput label="Email" required />
-      <TextInput label="Password" type="password" required />
-      <TextInput label="Confirm Password" type="password" required />
-      <Button className='full-width'>Sign Up</Button>
+      <TextInput label="Name" value={name} onChange={onNameChange} required />
+      <TextInput label="Email" type="email" value={email} onChange={onEmailChange} required />
+      <TextInput
+        label="Password"
+        type="password"
+        value={password}
+        onChange={onPasswordChange}
+        required
+      />
+      <TextInput
+        label="Confirm Password"
+        type="password"
+        value={confirmPassword}
+        onChange={onConfirmPasswordChange}
+        required
+      />
+      <Button className="full-width" type="submit">
+        Sign Up
+      </Button>
     </div>
   );
 }
 
 function AuthForm() {
-  const [isLogin, setIsLogin] = useState(true);
+  const [isLogin, setIsLogin] = useState<boolean>(true);
+  const [error, setError] = useState<string>('');
+  const [name, setName] = useState<string>('');
+  const [email, setEmail] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+  const [confirmPassword, setConfirmPassword] = useState<string>('');
+
+  const formData: AuthFormData = {
+    name,
+    email,
+    password,
+    confirmPassword,
+  };
+
+  const formHandlers: AuthHandlers = {
+    onNameChange: setName,
+    onEmailChange: setEmail,
+    onPasswordChange: setPassword,
+    onConfirmPasswordChange: setConfirmPassword,
+  };
+
+  const handleSubmit = (e: React.FormEvent): void => {
+    e.preventDefault();
+    isLogin ? handleLogIn() : handleSignUp();
+  };
+
+  const BACKEND_URL = 'http://localhost:3000/auth';
+
+  const handleLogIn = async (): Promise<void> => {
+    try {
+      const response = await fetch(`${BACKEND_URL}/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+          email,
+          password,
+        }),
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        setError(data.error);
+        return;
+      }
+
+      // TODO: Store the token/user data and redirect
+      console.log('Login successful:', data);
+
+      setError('');
+    } catch (error) {
+      setError('An error occurred');
+    }
+  };
+
+  const handleSignUp = async (): Promise<void> => {
+    if (password !== confirmPassword) {
+      setError('Passwords do not match');
+      return;
+    }
+
+    try {
+      const response = await fetch(`${BACKEND_URL}/signup`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+          name,
+          email,
+          password,
+          confirmPassword,
+        }),
+      });
+
+      // Handle successful signup
+      const data = await response.json();
+
+      if (!response.ok) {
+        setError(data.error);
+        return;
+      }
+
+      // TODO: Store the token/user data and redirect
+      console.log('Signup successful:', data);
+      setError('');
+    } catch (error) {
+      setError('An error occurred');
+    }
+  };
 
   return (
-    <div className="auth-form">
+    <form className="auth-form" onSubmit={handleSubmit}>
       <div className="auth-toggle">
         <Button
           variant={isLogin ? 'auth-toggle-active' : 'auth-toggle-inactive'}
           onClick={() => setIsLogin(true)}
-          className='full-width'
+          className="full-width"
         >
           Log In
         </Button>
         <Button
           variant={!isLogin ? 'auth-toggle-active' : 'auth-toggle-inactive'}
           onClick={() => setIsLogin(false)}
-          className='full-width'
+          className="full-width"
         >
           Sign Up
         </Button>
       </div>
-      {isLogin ? <LoginForm /> : <SignUpForm />}
-    </div>
+
+      {error && <div className="error-msg">{error}</div>}
+
+      {isLogin ? (
+        <LoginForm data={formData} handlers={formHandlers} />
+      ) : (
+        <SignUpForm data={formData} handlers={formHandlers} />
+      )}
+    </form>
   );
 }
 
