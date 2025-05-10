@@ -14,7 +14,7 @@ function App() {
           <Route path="/" element={<Auth />} />
           <Route element={<PrivateRoute />}>
             <Route path="/home" element={<Home />} />
-            <Route path="/habit" element={<Habit />} />
+            <Route path="/habit/:id" element={<Habit />} />
           </Route>
         </Routes>
       </AuthProvider>

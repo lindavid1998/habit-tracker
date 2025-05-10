@@ -22,6 +22,14 @@ function Habits({ habits }: HabitsProps) {
     });
   };
 
+  if (habits.length == 0) {
+    return (
+      <div className="habits">
+        <div>You don't have any habits yet. Create one!</div>
+      </div>
+    );
+  }
+
   return (
     <div className="habits">
       {habits.map((habit) => (
