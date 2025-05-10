@@ -39,7 +39,7 @@ app.get('/', (req: Request, res: Response) => {
 app.post('/auth/signup', async (req: Request, res: Response) => {
   try {
     const { name, email, password, confirmPassword } = req.body;
-    
+
     // Validate input
     if (!name || !email || !password || !confirmPassword) {
       res.status(400).json({ error: 'All fields are required' });
@@ -163,6 +163,31 @@ app.post('/auth/login', async (req: Request, res: Response) => {
     return;
   } catch (error) {
     console.log(error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+app.get('/auth/me', async (req: Request, res: Response) => {
+  try {
+    const token = req.cookies.token;
+    if (!token) {
+      res.status(401).json({ error: 'No token provided' });
+      return;
+    }
+
+    // verify jwt token
+    const payload = jwt.verify(token, JWT_SECRET) as {
+      userId: string;
+      name: string;
+      email: string;
+    };
+
+    res.status(200).json(payload);
+  } catch (error) {
+    if (error instanceof jwt.JsonWebTokenError) {
+      res.status(401).json({ error: 'Invalid token' });
+      return;
+    }
     res.status(500).json({ error: 'Internal server error' });
   }
 });
