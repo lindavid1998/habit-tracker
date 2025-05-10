@@ -13,6 +13,8 @@ interface AddHabitFormProps {
   onClickBack: () => void;
 }
 
+const BACKEND_URL = 'http://localhost:3000/habit';
+
 export default function AddHabitForm({ onClickBack }: AddHabitFormProps) {
   const [origin, setOrigin] = useState<string>('');
   const [destination, setDestination] = useState<string>('');
@@ -20,18 +22,44 @@ export default function AddHabitForm({ onClickBack }: AddHabitFormProps) {
   const [status, setStatus] = useState<FormStatus>('idle');
   const [errorMessage, setErrorMessage] = useState<string>('');
 
+  interface CreateHabitRequest {
+    description: string;
+    origin: string;
+    destination: string;
+    totalDistance: number;
+  }
+
+  const totalDistance = 100; // TODO: Calculate distance between origin and destination
+
+  const CreateHabitRequestBody: CreateHabitRequest = {
+    description,
+    origin,
+    destination,
+    totalDistance,
+  };
+
   const handleSubmit = async () => {
     setStatus('loading');
     try {
-      // TODO: Replace with actual API call
-      await new Promise((resolve) => setTimeout(resolve, 2000)); // Simulated API call
+      const response = await fetch(BACKEND_URL, {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(CreateHabitRequestBody),
+      });
 
-      const randomNum = Math.random();
-      if (randomNum < 0.5) {
-        setStatus('success');
-      } else {
-        throw new Error('Failed to create habit');
+      const data = await response.json();
+
+      if (!response.ok) {
+        setStatus('error');
+        setErrorMessage(data.message);
       }
+
+      console.log('Successfully added habit id: ', data.habitId);
+      setStatus('success');
+      // TODO: redirect or refresh page?
     } catch (error) {
       setStatus('error');
       setErrorMessage(error instanceof Error ? error.message : 'An error occurred');
