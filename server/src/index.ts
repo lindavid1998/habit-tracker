@@ -139,14 +139,14 @@ app.post('/auth/login', async (req: Request, res: Response) => {
 
     // create user object from db result
     const dbUser = result.rows[0];
-    
+
     // verify password
     const isValidPassword = await bcrypt.compare(password, dbUser.password_hash);
     if (!isValidPassword) {
       res.status(401).json({ error: 'Invalid credentials' });
       return;
     }
-    
+
     // generate JWT token
     const user: User = {
       id: dbUser.id,
@@ -238,6 +238,30 @@ app.post('/habit', authorization, async (req: Request, res: Response) => {
     } else {
       res.status(500).json({ message: 'Internal server error' });
     }
+  }
+});
+
+app.get('/habit/:id', authorization, async (req, res) => {
+  const habitId: number = Number(req.params.id);
+  const user = req.user as User;
+  try {
+    const query = `SELECT * FROM habits WHERE id = $1`;
+    const result = await pool.query(query, [habitId]);
+
+    if (result.rowCount === 0) {
+      res.status(404).json({ message: 'Not found' });
+      return;
+    }
+
+    const habit = result.rows[0];
+    if (user.id != habit.user_id) {
+      res.status(401).json({ message: 'You are not authorized to view this' });
+      return;
+    }
+
+    res.status(200).json(habit);
+  } catch (error) {
+    res.status(500).json({ message: 'Internal server error' });
   }
 });
 
