@@ -96,3 +96,7 @@ select {
     border-color: var(--color-border-active);
   }
 }
+
+.error {
+  color: var(--color-error);
+}
