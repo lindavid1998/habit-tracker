@@ -139,21 +139,21 @@ app.post('/auth/login', async (req: Request, res: Response) => {
 
     // create user object from db result
     const dbUser = result.rows[0];
-    const user: User = {
-      id: dbUser.id,
-      name: dbUser.name,
-      email: dbUser.email,
-    };
-
+    
     // verify password
     const isValidPassword = await bcrypt.compare(password, dbUser.password_hash);
     if (!isValidPassword) {
       res.status(401).json({ error: 'Invalid credentials' });
       return;
     }
-
+    
     // generate JWT token
-    const token = jwt.sign({ id: user.id, name: user.name, email: user.email }, JWT_SECRET, {
+    const user: User = {
+      id: dbUser.id,
+      name: dbUser.name,
+      email: dbUser.email,
+    };
+    const token = jwt.sign(user, JWT_SECRET, {
       expiresIn: '24h',
     });
 
@@ -208,7 +208,7 @@ app.post('/habit', authorization, async (req: Request, res: Response) => {
   }
 
   const { description, origin, destination, totalDistance }: CreateHabitRequest = req.body;
-  
+
   const user = req.user as User;
   const userId: number = user.id;
 
@@ -250,7 +250,7 @@ app.get('/habits', authorization, async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: 'Internal server error' });
   }
-})
+});
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
