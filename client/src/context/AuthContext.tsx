@@ -11,6 +11,7 @@ interface User {
 // include in context: user object, logout function
 interface AuthContextType {
   user: null | User;
+  setUser: (user: User) => void;
   logout: () => Promise<void>;
   loading: boolean;
 }

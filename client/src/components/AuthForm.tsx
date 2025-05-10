@@ -1,8 +1,10 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import Button from './Button';
 import TextInput from './TextInput';
 import '../styles/auth.css';
 import { useNavigate } from 'react-router-dom';
+import { AuthContext, AuthContextType, User } from '../context/AuthContext';
+
 interface AuthFormData {
   name?: string;
   email: string;
@@ -74,6 +76,7 @@ function AuthForm() {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [confirmPassword, setConfirmPassword] = useState<string>('');
+  const auth: AuthContextType | null = useContext(AuthContext);
   let navigate = useNavigate();
 
   const formData: AuthFormData = {
@@ -90,9 +93,9 @@ function AuthForm() {
     onConfirmPasswordChange: setConfirmPassword,
   };
 
-  const handleSubmit = (e: React.FormEvent): void => {
+  const handleSubmit = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault();
-    isLogin ? handleLogIn() : handleSignUp();
+    isLogin ? await handleLogIn() : await handleSignUp();
     if (!error) {
       navigate('/home');
     }
@@ -121,6 +124,7 @@ function AuthForm() {
 
       console.log('Login successful:', data);
       setError('');
+      auth?.setUser(data.user); // update auth context
     } catch (error) {
       setError('An error occurred');
     }
@@ -157,6 +161,7 @@ function AuthForm() {
 
       console.log('Signup successful:', data);
       setError('');
+      auth?.setUser(data.user); // update auth context
     } catch (error) {
       setError('An error occurred');
     }
