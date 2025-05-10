@@ -2,7 +2,7 @@ import { useState } from 'react';
 import Button from './Button';
 import TextInput from './TextInput';
 import '../styles/auth.css';
-
+import { useNavigate } from 'react-router-dom';
 interface AuthFormData {
   name?: string;
   email: string;
@@ -74,6 +74,7 @@ function AuthForm() {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [confirmPassword, setConfirmPassword] = useState<string>('');
+  let navigate = useNavigate();
 
   const formData: AuthFormData = {
     name,
@@ -92,6 +93,9 @@ function AuthForm() {
   const handleSubmit = (e: React.FormEvent): void => {
     e.preventDefault();
     isLogin ? handleLogIn() : handleSignUp();
+    if (!error) {
+      navigate('/home');
+    }
   };
 
   const BACKEND_URL = 'http://localhost:3000/auth';
@@ -115,9 +119,7 @@ function AuthForm() {
         return;
       }
 
-      // TODO: Store the token/user data and redirect
       console.log('Login successful:', data);
-
       setError('');
     } catch (error) {
       setError('An error occurred');
@@ -153,7 +155,6 @@ function AuthForm() {
         return;
       }
 
-      // TODO: Store the token/user data and redirect
       console.log('Signup successful:', data);
       setError('');
     } catch (error) {

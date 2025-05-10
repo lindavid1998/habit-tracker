@@ -1,25 +1,22 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import Header from '../components/Header';
 import Button from '../components/Button';
 import Habits from '../components/Habits';
 import AddHabitForm from '../components/AddHabitForm';
 import '../styles/Home.css';
-
-interface HomeProps {
-  userName: string;
-}
+import { AuthContext } from '../context/AuthContext';
 
 const habits = ['Exercise for 30 minutes', 'Drink 2L of water', 'Water plants'];
 
-function Home({ userName }: HomeProps) {
+function Home() {
   const [showAddHabitForm, setShowAddHabitForm] = useState<boolean>(false);
   const today = new Date();
   const formattedDate = today.toLocaleDateString('en-US', { month: 'long', day: 'numeric' });
+  const auth = useContext(AuthContext);
 
   const toggleFormVisibility = () => {
     setShowAddHabitForm((prev) => !prev);
   };
-  // TODO on click back, call toggleFormVisibility
 
   return (
     <div className="home">
@@ -32,7 +29,7 @@ function Home({ userName }: HomeProps) {
       )}
       <Header />
       <div className="section">
-        <h1>Welcome, {userName}</h1>
+        {auth?.user ? <h1>Welcome, {auth.user.name}</h1> : <h1>Welcome</h1>}
         <Button onClick={toggleFormVisibility}>Add habit</Button>
       </div>
 
