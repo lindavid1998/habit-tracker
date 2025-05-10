@@ -1,4 +1,4 @@
-import express, { Request, Response } from 'express';
+import express, { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import cookieParser from 'cookie-parser';
@@ -6,11 +6,21 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import { pool } from '../db';
 import { QueryResult } from 'pg';
+import authorization from '../middleware/authorization';
 
 interface User {
-  id: string;
+  id: number;
   name: string;
   email: string;
+}
+
+// add User object as property of Request object
+declare global {
+  namespace Express {
+    interface Request {
+      user?: User;
+    }
+  }
 }
 
 const PORT = 3000;
@@ -81,7 +91,7 @@ app.post('/auth/signup', async (req: Request, res: Response) => {
     };
 
     // Generate JWT
-    const token = jwt.sign({ userId: user.id, name: user.name, email: user.email }, JWT_SECRET, {
+    const token = jwt.sign({ id: user.id, name: user.name, email: user.email }, JWT_SECRET, {
       expiresIn: '24h',
     });
 
@@ -143,7 +153,7 @@ app.post('/auth/login', async (req: Request, res: Response) => {
     }
 
     // generate JWT token
-    const token = jwt.sign({ userId: user.id, name: user.name, email: user.email }, JWT_SECRET, {
+    const token = jwt.sign({ id: user.id, name: user.name, email: user.email }, JWT_SECRET, {
       expiresIn: '24h',
     });
 
@@ -167,32 +177,16 @@ app.post('/auth/login', async (req: Request, res: Response) => {
   }
 });
 
-app.get('/auth/me', async (req: Request, res: Response) => {
+app.get('/auth/me', authorization, async (req: Request, res: Response) => {
   try {
-    const token = req.cookies.token;
-    if (!token) {
-      res.status(401).json({ error: 'No token provided' });
-      return;
-    }
-
-    // verify jwt token
-    const payload = jwt.verify(token, JWT_SECRET) as {
-      userId: string;
-      name: string;
-      email: string;
-    };
-
-    res.status(200).json(payload);
+    const user = req.user as User;
+    res.status(200).json(user);
   } catch (error) {
-    if (error instanceof jwt.JsonWebTokenError) {
-      res.status(401).json({ error: 'Invalid token' });
-      return;
-    }
     res.status(500).json({ error: 'Internal server error' });
   }
 });
 
-app.get('/auth/logout', (req, res) => {
+app.get('/auth/logout', (req: Request, res: Response) => {
   try {
     res.clearCookie('token', {
       httpOnly: true,
@@ -202,6 +196,48 @@ app.get('/auth/logout', (req, res) => {
     res.status(200).json({ message: 'Log out successful' });
   } catch (error) {
     res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+app.post('/habit', authorization, async (req: Request, res: Response) => {
+  interface CreateHabitRequest {
+    description: string;
+    origin: string;
+    destination: string;
+    totalDistance: number;
+  }
+
+  const { description, origin, destination, totalDistance }: CreateHabitRequest = req.body;
+  
+  const user = req.user as User;
+  const userId: number = user.id;
+  
+  try {
+    const query = `
+      INSERT INTO habits (user_id, description, origin, destination, total_distance) 
+      VALUES ($1, $2, $3, $4, $5)
+      RETURNING id
+    `;
+
+    const result = await pool.query(query, [
+      userId,
+      description,
+      origin,
+      destination,
+      totalDistance,
+    ]);
+
+    const insertedHabit: { id: number } = result.rows[0];
+    const habitId: number = insertedHabit.id;
+
+    res.status(200).json({ message: 'Habit added successfully', habitId });
+  } catch (error) {
+    console.log(error);
+    if (error instanceof Error) {
+      res.status(500).json({ message: error.message });
+    } else {
+      res.status(500).json({ message: 'Internal server error' });
+    }
   }
 });
 
