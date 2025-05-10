@@ -211,7 +211,7 @@ app.post('/habit', authorization, async (req: Request, res: Response) => {
   
   const user = req.user as User;
   const userId: number = user.id;
-  
+
   try {
     const query = `
       INSERT INTO habits (user_id, description, origin, destination, total_distance) 
@@ -240,6 +240,17 @@ app.post('/habit', authorization, async (req: Request, res: Response) => {
     }
   }
 });
+
+app.get('/habits', authorization, async (req, res) => {
+  const userId = req.user?.id;
+  try {
+    const query = `SELECT id, description FROM habits WHERE user_id = $1`;
+    const result = await pool.query(query, [userId]);
+    res.status(200).json(result.rows);
+  } catch (error) {
+    res.status(500).json({ message: 'Internal server error' });
+  }
+})
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
