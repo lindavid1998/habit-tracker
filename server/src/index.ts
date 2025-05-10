@@ -192,6 +192,19 @@ app.get('/auth/me', async (req: Request, res: Response) => {
   }
 });
 
+app.get('/auth/logout', (req, res) => {
+  try {
+    res.clearCookie('token', {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'strict',
+    });
+    res.status(200).json({ message: 'Log out successful' });
+  } catch (error) {
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
