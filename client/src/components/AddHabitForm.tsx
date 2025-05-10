@@ -102,7 +102,7 @@ export default function AddHabitForm({ onClickBack }: AddHabitFormProps) {
   }
 
   return (
-    <div className="add-habit-form">
+    <form className="add-habit-form" onSubmit={handleSubmit}>
       <button className="back-button" onClick={onClickBack}>
         <BackArrow />
       </button>
@@ -117,20 +117,22 @@ export default function AddHabitForm({ onClickBack }: AddHabitFormProps) {
         label="Origin"
         value={origin}
         onChange={setOrigin}
+        required
       />
       <Dropdown
         options={locations.filter((loc) => loc !== origin)}
         label="Destination"
         value={destination}
         onChange={setDestination}
+        required
       />
       <Textarea label="Description" value={description} onChange={setDescription} required />
 
       <div className="add-button">
-        <Button onClick={handleSubmit} className="full-width">
+        <Button type="submit" className="full-width">
           Add habit
         </Button>
       </div>
-    </div>
+    </form>
   );
 }
